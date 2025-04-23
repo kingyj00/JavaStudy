@@ -17,7 +17,7 @@ public class StudyJavaApplication {
 		List<String> phoneBookLog = new ArrayList<>();
 
 		// 기본 등록 예시
-		phoneBookLog.add("이름: 홍길도, 전화번호: 010-0000-0000");
+		phoneBookLog.add("이름: 홍길동, 전화번호: 010-0000-0000");
 		phoneBookLog.add("이름: 홍길순, 전화번호: 010-1111-1111");
 
 		System.out.println("=== 기본 저장된 전화번호 목록 ===");
