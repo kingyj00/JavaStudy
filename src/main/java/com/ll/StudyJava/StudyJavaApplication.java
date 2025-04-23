@@ -16,6 +16,16 @@ public class StudyJavaApplication {
 		Scanner scanner = new Scanner(System.in);
 		List<String> phoneBookLog = new ArrayList<>();
 
+		// 기본 등록 예시
+		phoneBookLog.add("이름: 홍길도, 전화번호: 010-0000-0000");
+		phoneBookLog.add("이름: 홍길순, 전화번호: 010-1111-1111");
+
+		System.out.println("=== 기본 저장된 전화번호 목록 ===");
+		for (String log : phoneBookLog) {
+			System.out.println(log);
+		}
+		System.out.println("============================");
+
 		while (true) {
 			System.out.print("입력 (번호 입력시 저장 / 종료 입력시 종료) : ");
 			String input = scanner.nextLine();
