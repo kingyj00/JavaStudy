@@ -50,7 +50,7 @@ public class StudyJavaApplication {
 				}
 				System.out.println("=======================");
 			} else {
-				System.out.println("입력값 : " + input);
+				System.out.println("잘못된 명령어입니다.");
 			}
 		}
 
