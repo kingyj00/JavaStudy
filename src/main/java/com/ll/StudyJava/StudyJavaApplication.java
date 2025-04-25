@@ -27,13 +27,13 @@ public class StudyJavaApplication {
 		System.out.println("============================");
 
 		while (true) {
-			System.out.print("입력 (번호 입력시 저장 / 종료 입력시 종료) : ");
+			System.out.print("입력 (저장 입력시 저장 / 종료 입력시 종료) : ");
 			String input = scanner.nextLine();
 
 			if ("종료".equalsIgnoreCase(input)) {
 				System.out.println("프로그램을 종료합니다.");
 				break;
-			} else if ("번호".equals(input)) {
+			} else if ("저장".equals(input)) {
 				System.out.print("이름을 입력하세요: ");
 				String name = scanner.nextLine();
 
