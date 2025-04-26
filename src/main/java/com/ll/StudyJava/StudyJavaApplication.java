@@ -1,6 +1,5 @@
 package com.ll.StudyJava;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public class StudyJavaApplication {
 		System.out.println("============================");
 
 		while (true) {
-			System.out.print("입력 (저장 입력시 저장 / 종료 입력시 종료) : ");
+			System.out.print("입력 (저장 / 삭제 / 종료 입력) : ");
 			String input = scanner.nextLine();
 
 			if ("종료".equalsIgnoreCase(input)) {
@@ -49,11 +48,32 @@ public class StudyJavaApplication {
 					System.out.println(log);
 				}
 				System.out.println("=======================");
+			} else if ("삭제".equals(input)) {
+				System.out.print("삭제할 이름을 입력하세요: ");
+				String nameToDelete = scanner.nextLine();
+				boolean found = false;
+
+				for (int i = 0; i < phoneBookLog.size(); i++) {
+					if (phoneBookLog.get(i).contains("이름: " + nameToDelete + ",")) {
+						phoneBookLog.remove(i);
+						found = true;
+						System.out.println(nameToDelete + "님의 정보가 삭제되었습니다.");
+						break;
+					}
+				}
+
+				if (!found) {
+					System.out.println(nameToDelete + "님의 정보를 찾을 수 없습니다.");
+				}
+
+				System.out.println("=== 현재까지 저장된 정보 ===");
+				for (String log : phoneBookLog) {
+					System.out.println(log);
+				}
+				System.out.println("=======================");
 			} else {
 				System.out.println("잘못된 명령어입니다.");
 			}
 		}
-
-		SpringApplication.run(StudyJavaApplication.class, args);
 	}
 }
