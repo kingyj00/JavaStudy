@@ -20,8 +20,9 @@ public class StudyJavaApplication {
 		phoneBookLog.add("이름: 홍길순, 전화번호: 010-1111-1111");
 
 		System.out.println("=== 기본 저장된 전화번호 목록 ===");
-		for (String log : phoneBookLog) {
-			System.out.println(log);
+		// [변경] 번호를 붙여 출력
+		for (int i = 0; i < phoneBookLog.size(); i++) {
+			System.out.println((i + 1) + ". " + phoneBookLog.get(i));
 		}
 		System.out.println("============================");
 
@@ -44,8 +45,9 @@ public class StudyJavaApplication {
 
 				System.out.println("저장 완료!");
 				System.out.println("=== 현재까지 저장된 정보 ===");
-				for (String log : phoneBookLog) {
-					System.out.println(log);
+				// [변경] 번호를 붙여 출력
+				for (int i = 0; i < phoneBookLog.size(); i++) {
+					System.out.println((i + 1) + ". " + phoneBookLog.get(i));
 				}
 				System.out.println("=======================");
 			} else if ("삭제".equals(input)) {
@@ -67,8 +69,9 @@ public class StudyJavaApplication {
 				}
 
 				System.out.println("=== 현재까지 저장된 정보 ===");
-				for (String log : phoneBookLog) {
-					System.out.println(log);
+				// [변경] 번호를 붙여 출력
+				for (int i = 0; i < phoneBookLog.size(); i++) {
+					System.out.println((i + 1) + ". " + phoneBookLog.get(i));
 				}
 				System.out.println("=======================");
 			} else {
