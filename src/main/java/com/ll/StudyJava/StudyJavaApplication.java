@@ -22,7 +22,7 @@ public class StudyJavaApplication {
 		printPhoneBook(phoneBookLog);
 
 		while (true) {
-			System.out.print("입력 (저장 / 삭제 / 종료 입력) : ");
+			System.out.print("입력 (저장 / 삭제 / 수정 / 종료 입력) : ");
 			String input = scanner.nextLine();
 
 			if ("종료".equalsIgnoreCase(input)) {
@@ -58,6 +58,37 @@ public class StudyJavaApplication {
 					} else {
 						String removedEntry = phoneBookLog.remove(number - 1);
 						System.out.println("삭제 완료: " + removedEntry);
+					}
+				} catch (NumberFormatException e) {
+					System.out.println("숫자를 입력해야 합니다.");
+				}
+
+				printPhoneBook(phoneBookLog);
+
+			} else if ("수정".equalsIgnoreCase(input)) { // [추가]
+				if (phoneBookLog.isEmpty()) {
+					System.out.println("수정할 데이터가 없습니다.");
+					continue;
+				}
+
+				printPhoneBook(phoneBookLog);
+				System.out.print("수정할 번호를 입력하세요: ");
+				String numberInput = scanner.nextLine();
+
+				try {
+					int number = Integer.parseInt(numberInput);
+					if (number < 1 || number > phoneBookLog.size()) {
+						System.out.println("잘못된 번호입니다.");
+					} else {
+						System.out.print("새로운 이름을 입력하세요: ");
+						String newName = scanner.nextLine();
+
+						System.out.print("새로운 전화번호를 입력하세요: ");
+						String newPhoneNumber = scanner.nextLine();
+
+						String newEntry = "이름: " + newName + ", 전화번호: " + newPhoneNumber;
+						phoneBookLog.set(number - 1, newEntry);
+						System.out.println("수정 완료!");
 					}
 				} catch (NumberFormatException e) {
 					System.out.println("숫자를 입력해야 합니다.");
