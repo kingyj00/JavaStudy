@@ -91,7 +91,7 @@ public class StudyJavaApplication {
 						System.out.println("수정 완료!");
 					}
 				} catch (NumberFormatException e) {
-					System.out.println("숫자를 입력해야 합니다.");
+					System.out.println("숫자를 입력해주세요..");
 				}
 
 				printPhoneBook(phoneBookLog);
