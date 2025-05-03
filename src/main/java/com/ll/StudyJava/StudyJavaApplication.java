@@ -32,8 +32,16 @@ public class StudyJavaApplication {
 				System.out.print("이름을 입력하세요: ");
 				String name = scanner.nextLine();
 
-				System.out.print("전화번호를 입력하세요: ");
-				String phoneNumber = scanner.nextLine();
+				System.out.print("전화번호를 입력하세요 (숫자만, 예: 01012345678): ");
+				String phoneNumber;
+				while (true) {
+					phoneNumber = scanner.nextLine();
+					if (phoneNumber.matches("\\d+")) {
+						break;
+					} else {
+						System.out.print("숫자만 입력해주세요. 다시 입력하세요: ");
+					}
+				}
 
 				String entry = "이름: " + name + ", 전화번호: " + phoneNumber;
 				phoneBookLog.add(entry);
@@ -65,7 +73,7 @@ public class StudyJavaApplication {
 
 				printPhoneBook(phoneBookLog);
 
-			} else if ("수정".equalsIgnoreCase(input)) { // [추가]
+			} else if ("수정".equalsIgnoreCase(input)) {
 				if (phoneBookLog.isEmpty()) {
 					System.out.println("수정할 데이터가 없습니다.");
 					continue;
@@ -83,15 +91,23 @@ public class StudyJavaApplication {
 						System.out.print("새로운 이름을 입력하세요: ");
 						String newName = scanner.nextLine();
 
-						System.out.print("새로운 전화번호를 입력하세요: ");
-						String newPhoneNumber = scanner.nextLine();
+						System.out.print("새로운 전화번호를 입력하세요 (숫자만, 예: 01012345678): ");
+						String newPhoneNumber;
+						while (true) {
+							newPhoneNumber = scanner.nextLine();
+							if (newPhoneNumber.matches("\\d+")) {
+								break;
+							} else {
+								System.out.print("숫자만 입력해주세요. 다시 입력하세요: ");
+							}
+						}
 
 						String newEntry = "이름: " + newName + ", 전화번호: " + newPhoneNumber;
 						phoneBookLog.set(number - 1, newEntry);
 						System.out.println("수정 완료!");
 					}
 				} catch (NumberFormatException e) {
-					System.out.println("숫자를 입력해주세요..");
+					System.out.println("숫자를 입력해야 합니다.");
 				}
 
 				printPhoneBook(phoneBookLog);
