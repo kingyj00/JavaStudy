@@ -55,14 +55,13 @@ public class StudyJavaApplication {
 					continue;
 				}
 
-				printPhoneBook(phoneBookLog);
 				System.out.print("삭제할 번호를 입력하세요: ");
 				String numberInput = scanner.nextLine();
 
 				try {
 					int number = Integer.parseInt(numberInput);
 					if (number < 1 || number > phoneBookLog.size()) {
-						System.out.println("잘못된 번호입니다.");
+						System.out.println("######### 없는 번호입니다. #########");
 					} else {
 						String removedEntry = phoneBookLog.remove(number - 1);
 						System.out.println("삭제 완료: " + removedEntry);
