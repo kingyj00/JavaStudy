@@ -42,8 +42,8 @@ public class StudyJavaApplication {
 						System.out.print("숫자만 입력해주세요. 다시 입력하세요: ");
 					}
 				}
-
-				String entry = "이름: " + name + ", 전화번호: " + phoneNumber;
+				String formattedPhone = formatPhoneNumber(phoneNumber);  // 자동 포맷팅
+				String entry = "이름: " + name + ", 전화번호: " + formattedPhone;
 				phoneBookLog.add(entry);
 
 				System.out.println("저장 완료!");
@@ -101,8 +101,8 @@ public class StudyJavaApplication {
 								System.out.print("숫자만 입력해주세요. 다시 입력하세요: ");
 							}
 						}
-
-						String newEntry = "이름: " + newName + ", 전화번호: " + newPhoneNumber;
+						String formattedPhone = formatPhoneNumber(newPhoneNumber);  // 자동 포맷팅
+						String newEntry = "이름: " + newName + ", 전화번호: " + formattedPhone;
 						phoneBookLog.set(number - 1, newEntry);
 						System.out.println("수정 완료!");
 					}
@@ -118,6 +118,18 @@ public class StudyJavaApplication {
 		}
 	}
 
+	// 전화번호 자동 포맷팅 3자리, 7자리
+	private static String formatPhoneNumber(String number) {
+		if (number.length() == 11) {
+			return number.substring(0, 3) + "-" + number.substring(3, 7) + "-" + number.substring(7);
+		} else if (number.length() == 10) {
+			return number.substring(0, 3) + "-" + number.substring(3, 6) + "-" + number.substring(6);
+		} else {
+			return number; // 예외적인 형식은 그대로 반환
+		}
+	}
+
+	// 목록 출력 메서드
 	private static void printPhoneBook(List<String> phoneBookLog) {
 		System.out.println("=== 현재까지 저장된 정보 ===");
 		if (phoneBookLog.isEmpty()) {
