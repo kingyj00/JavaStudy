@@ -85,7 +85,7 @@ public class StudyJavaApplication {
 				try {
 					int number = Integer.parseInt(numberInput);
 					if (number < 1 || number > phoneBookLog.size()) {
-						System.out.println("잘못된 번호입니다.");
+						System.out.println("없는 번호입니다.");
 					} else {
 						System.out.print("새로운 이름을 입력하세요: ");
 						String newName = scanner.nextLine();
@@ -100,7 +100,7 @@ public class StudyJavaApplication {
 								System.out.print("숫자만 입력해주세요. 다시 입력하세요: ");
 							}
 						}
-						String formattedPhone = formatPhoneNumber(newPhoneNumber);  // 자동 포맷팅
+						String formattedPhone = formatPhoneNumber(newPhoneNumber);
 						String newEntry = "이름: " + newName + ", 전화번호: " + formattedPhone;
 						phoneBookLog.set(number - 1, newEntry);
 						System.out.println("수정 완료!");
@@ -110,10 +110,10 @@ public class StudyJavaApplication {
 				}
 
 				printPhoneBook(phoneBookLog);
-
-			} else {
-				System.out.println("잘못된 명령어입니다.");
 			}
+
+				printPhoneBook(phoneBookLog);
+
 		}
 	}
 
