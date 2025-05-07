@@ -22,12 +22,13 @@ public class StudyJavaApplication {
 		printPhoneBook(phoneBookLog);
 
 		while (true) {
-			System.out.print("입력 (저장 / 삭제 / 수정 / 종료 입력) : ");
+			System.out.print("입력 (저장 / 삭제 / 수정 / 검색 / 종료 입력) : ");
 			String input = scanner.nextLine();
 
 			if ("종료".equalsIgnoreCase(input)) {
 				System.out.println("프로그램을 종료합니다.");
 				break;
+
 			} else if ("저장".equalsIgnoreCase(input)) {
 				System.out.print("이름을 입력하세요: ");
 				String name = scanner.nextLine();
@@ -53,7 +54,7 @@ public class StudyJavaApplication {
 					if (isDuplicate) {
 						System.out.print("⚠ 이미 등록된 전화번호입니다. 다른 번호를 입력하세요: ");
 					} else {
-						phoneNumber = formattedPhone; // 포맷된 값으로 저장
+						phoneNumber = formattedPhone;
 						break;
 					}
 				}
@@ -115,7 +116,6 @@ public class StudyJavaApplication {
 
 							String formattedPhone = formatPhoneNumber(newPhoneNumber);
 
-							// 중복 체크 (본인 제외)
 							boolean isDuplicate = false;
 							for (int i = 0; i < phoneBookLog.size(); i++) {
 								if (i == number - 1) continue;
@@ -142,24 +142,40 @@ public class StudyJavaApplication {
 				}
 
 				printPhoneBook(phoneBookLog);
-			} else {
-				System.out.println("잘못된 명령어입니다.");
+
+			} else if ("검색".equalsIgnoreCase(input)) {
+				System.out.print("검색할 이름을 입력하세요: ");
+				String keyword = scanner.nextLine();
+				boolean found = false;
+
+				System.out.println("=== 검색 결과 ===");
+				for (int i = 0; i < phoneBookLog.size(); i++) {
+					if (phoneBookLog.get(i).contains("이름: " + keyword)) {
+						System.out.println((i + 1) + ". " + phoneBookLog.get(i));
+						found = true;
+					}
+				}
+
+				if (!found) {
+					System.out.println("일치하는 결과가 없습니다.");
+				}
+				System.out.println("================");
 			}
+
+			printPhoneBook(phoneBookLog);
 		}
 	}
 
-	// 전화번호 자동 포맷팅
 	private static String formatPhoneNumber(String number) {
 		if (number.length() == 11) {
 			return number.substring(0, 3) + "-" + number.substring(3, 7) + "-" + number.substring(7);
 		} else if (number.length() == 10) {
 			return number.substring(0, 3) + "-" + number.substring(3, 6) + "-" + number.substring(6);
 		} else {
-			return number; // 예외적일 경우 그대로
+			return number;
 		}
 	}
 
-	// 목록 출력
 	private static void printPhoneBook(List<String> phoneBookLog) {
 		System.out.println("=== 현재까지 저장된 정보 ===");
 		if (phoneBookLog.isEmpty()) {
