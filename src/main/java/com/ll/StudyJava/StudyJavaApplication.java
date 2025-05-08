@@ -144,13 +144,13 @@ public class StudyJavaApplication {
 				printPhoneBook(phoneBookLog);
 
 			} else if ("검색".equalsIgnoreCase(input)) {
-				System.out.print("검색할 이름을 입력하세요: ");
+				System.out.print("검색할 이름 또는 전화번호 일부를 입력하세요: ");
 				String keyword = scanner.nextLine();
 				boolean found = false;
 
 				System.out.println("=== 검색 결과 ===");
 				for (int i = 0; i < phoneBookLog.size(); i++) {
-					if (phoneBookLog.get(i).contains("이름: " + keyword)) {
+					if (phoneBookLog.get(i).contains(keyword)) {
 						System.out.println((i + 1) + ". " + phoneBookLog.get(i));
 						found = true;
 					}
