@@ -146,18 +146,20 @@ public class StudyJavaApplication {
 			} else if ("검색".equalsIgnoreCase(input)) {
 				System.out.print("검색할 이름 또는 전화번호 일부를 입력하세요: ");
 				String keyword = scanner.nextLine();
-				boolean found = false;
+				int count = 0;
 
 				System.out.println("=== 검색 결과 ===");
 				for (int i = 0; i < phoneBookLog.size(); i++) {
 					if (phoneBookLog.get(i).contains(keyword)) {
 						System.out.println((i + 1) + ". " + phoneBookLog.get(i));
-						found = true;
+						count++;
 					}
 				}
 
-				if (!found) {
+				if (count == 0) {
 					System.out.println("일치하는 결과가 없습니다.");
+				} else {
+					System.out.println("총 " + count + "개의 결과가 검색되었습니다.");
 				}
 				System.out.println("================");
 
@@ -169,9 +171,9 @@ public class StudyJavaApplication {
 					String confirm = scanner.nextLine();
 					if (confirm.equalsIgnoreCase("Y")) {
 						phoneBookLog.clear();
-						System.out.println("✅ 전체 삭제 완료!");
+						System.out.println("전체 삭제 완료!");
 					} else {
-						System.out.println("❌ 삭제가 취소되었습니다.");
+						System.out.println("삭제가 취소되었습니다.");
 					}
 				}
 			} else {
