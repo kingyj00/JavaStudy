@@ -22,7 +22,7 @@ public class StudyJavaApplication {
 		printPhoneBook(phoneBookLog);
 
 		while (true) {
-			System.out.print("입력 (저장 / 삭제 / 수정 / 검색 / 종료 입력) : ");
+			System.out.print("입력 (저장 / 삭제 / 수정 / 검색 / 전체삭제 / 종료 입력) : ");
 			String input = scanner.nextLine();
 
 			if ("종료".equalsIgnoreCase(input)) {
@@ -160,6 +160,22 @@ public class StudyJavaApplication {
 					System.out.println("일치하는 결과가 없습니다.");
 				}
 				System.out.println("================");
+
+			} else if ("전체삭제".equalsIgnoreCase(input)) {
+				if (phoneBookLog.isEmpty()) {
+					System.out.println("삭제할 데이터가 없습니다.");
+				} else {
+					System.out.print("정말 모두 삭제할까요? (Y/N): ");
+					String confirm = scanner.nextLine();
+					if (confirm.equalsIgnoreCase("Y")) {
+						phoneBookLog.clear();
+						System.out.println("✅ 전체 삭제 완료!");
+					} else {
+						System.out.println("❌ 삭제가 취소되었습니다.");
+					}
+				}
+			} else {
+				System.out.println("잘못된 명령어입니다.");
 			}
 
 			printPhoneBook(phoneBookLog);
