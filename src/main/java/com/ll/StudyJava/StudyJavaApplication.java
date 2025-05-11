@@ -2,9 +2,7 @@ package com.ll.StudyJava;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 @SpringBootApplication
 public class StudyJavaApplication {
@@ -22,7 +20,7 @@ public class StudyJavaApplication {
 		printPhoneBook(phoneBookLog);
 
 		while (true) {
-			System.out.print("입력 (저장 / 삭제 / 수정 / 검색 / 전체삭제 / 종료 입력) : ");
+			System.out.print("입력 (저장 / 삭제 / 수정 / 검색 / 전체삭제 / 정렬 / 종료 입력) : ");
 			String input = scanner.nextLine();
 
 			if ("종료".equalsIgnoreCase(input)) {
@@ -175,6 +173,34 @@ public class StudyJavaApplication {
 					} else {
 						System.out.println("삭제가 취소되었습니다.");
 					}
+				}
+
+			} else if ("정렬".equalsIgnoreCase(input)) {
+				if (phoneBookLog.isEmpty()) {
+					System.out.println("정렬할 데이터가 없습니다.");
+					continue;
+				}
+
+				System.out.print("정렬 기준을 선택하세요 (이름 / 번호): ");
+				String sortKey = scanner.nextLine();
+
+				if ("이름".equalsIgnoreCase(sortKey)) {
+					phoneBookLog.sort(Comparator.comparing(entry -> {
+						int start = entry.indexOf("이름: ") + 4;
+						int end = entry.indexOf(",");
+						return entry.substring(start, end);
+					}));
+					System.out.println("이름 기준으로 정렬되었습니다.");
+
+				} else if ("전화번호".equalsIgnoreCase(sortKey)) {
+					phoneBookLog.sort(Comparator.comparing(entry -> {
+						int start = entry.indexOf("번호: ") + 6;
+						return entry.substring(start).replaceAll("[^\\d]", "");
+					}));
+					System.out.println("전화번호 기준으로 정렬되었습니다.");
+
+				} else {
+					System.out.println("⚠ 잘못된 정렬 기준입니다.");
 				}
 			} else {
 				System.out.println("잘못된 명령어입니다.");
