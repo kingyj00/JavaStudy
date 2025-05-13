@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 
 public class PhoneBookGUI extends JFrame {
@@ -181,7 +182,7 @@ public class PhoneBookGUI extends JFrame {
     }
 
     private void showSortOptions() {
-        String[] options = {"이름", "전화번호"};
+        String[] options = {"이름 오름차순", "이름 내림차순", "전화번호 오름차순", "전화번호 내림차순"};
         String selected = (String) JOptionPane.showInputDialog(
                 this,
                 "정렬 기준을 선택하세요:",
@@ -194,14 +195,15 @@ public class PhoneBookGUI extends JFrame {
 
         if (selected == null) return;
 
-        if (selected.equals("이름")) {
-            sortByName();
-        } else if (selected.equals("전화번호")) {
-            sortByPhone();
+        switch (selected) {
+            case "이름 오름차순" -> sortByName(true);
+            case "이름 내림차순" -> sortByName(false);
+            case "전화번호 오름차순" -> sortByPhone(true);
+            case "전화번호 내림차순" -> sortByPhone(false);
         }
     }
 
-    private void sortByName() {
+    private void sortByName(boolean ascending) {
         List<String[]> data = new ArrayList<>();
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             data.add(new String[]{
@@ -211,16 +213,17 @@ public class PhoneBookGUI extends JFrame {
         }
 
         data.sort(Comparator.comparing(a -> a[0]));
+        if (!ascending) Collections.reverse(data);
 
         tableModel.setRowCount(0);
         for (String[] row : data) {
             tableModel.addRow(row);
         }
 
-        JOptionPane.showMessageDialog(this, "이름 기준으로 정렬되었습니다.");
+        JOptionPane.showMessageDialog(this, ascending ? "이름 기준 오름차순 정렬되었습니다." : "이름 기준 내림차순 정렬되었습니다.");
     }
 
-    private void sortByPhone() {
+    private void sortByPhone(boolean ascending) {
         List<String[]> data = new ArrayList<>();
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             data.add(new String[]{
@@ -230,13 +233,14 @@ public class PhoneBookGUI extends JFrame {
         }
 
         data.sort(Comparator.comparing(a -> a[1].replaceAll("\\D", "")));
+        if (!ascending) Collections.reverse(data);
 
         tableModel.setRowCount(0);
         for (String[] row : data) {
             tableModel.addRow(row);
         }
 
-        JOptionPane.showMessageDialog(this, "전화번호 기준으로 정렬되었습니다.");
+        JOptionPane.showMessageDialog(this, ascending ? "전화번호 기준 오름차순 정렬되었습니다." : "전화번호 기준 내림차순 정렬되었습니다.");
     }
 
     private String formatPhone(String number) {
