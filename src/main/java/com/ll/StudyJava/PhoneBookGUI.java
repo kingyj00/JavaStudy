@@ -56,7 +56,7 @@ public class PhoneBookGUI extends JFrame {
         deleteButton.addActionListener(e -> deleteEntry());
         clearButton.addActionListener(e -> clearAll());
         searchButton.addActionListener(e -> search());
-        sortButton.addActionListener(e -> sortByName());
+        sortButton.addActionListener(e -> showSortOptions());
         exitButton.addActionListener(e -> System.exit(0));
 
         add(inputPanel, BorderLayout.NORTH);
@@ -180,6 +180,27 @@ public class PhoneBookGUI extends JFrame {
         }
     }
 
+    private void showSortOptions() {
+        String[] options = {"이름", "전화번호"};
+        String selected = (String) JOptionPane.showInputDialog(
+                this,
+                "정렬 기준을 선택하세요:",
+                "정렬",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (selected == null) return;
+
+        if (selected.equals("이름")) {
+            sortByName();
+        } else if (selected.equals("전화번호")) {
+            sortByPhone();
+        }
+    }
+
     private void sortByName() {
         List<String[]> data = new ArrayList<>();
         for (int i = 0; i < tableModel.getRowCount(); i++) {
@@ -197,6 +218,25 @@ public class PhoneBookGUI extends JFrame {
         }
 
         JOptionPane.showMessageDialog(this, "이름 기준으로 정렬되었습니다.");
+    }
+
+    private void sortByPhone() {
+        List<String[]> data = new ArrayList<>();
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            data.add(new String[]{
+                    (String) tableModel.getValueAt(i, 0),
+                    (String) tableModel.getValueAt(i, 1)
+            });
+        }
+
+        data.sort(Comparator.comparing(a -> a[1].replaceAll("\\D", "")));
+
+        tableModel.setRowCount(0);
+        for (String[] row : data) {
+            tableModel.addRow(row);
+        }
+
+        JOptionPane.showMessageDialog(this, "전화번호 기준으로 정렬되었습니다.");
     }
 
     private String formatPhone(String number) {
