@@ -13,78 +13,78 @@ public class PhoneBookGUI extends JFrame {
     private DefaultTableModel tableModel;
     private JTable table;
     private JTextField nameField, phoneField, searchField;
+    private JLabel countLabel;
+    private boolean isDarkTheme = true;
 
     public PhoneBookGUI() {
         setTitle("전화번호부");
-        setSize(600, 400);
+        setSize(600, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        initUI();
+        setVisible(true);
+    }
 
-        Color bg = Color.BLACK;
-        Color lime = new Color(0xCCFF00);
+    private void initUI() {
+        Color bg = getBgColor();
+        Color text = getTextColor();
 
         tableModel = new DefaultTableModel(new Object[]{"이름", "전화번호"}, 0);
         table = new JTable(tableModel);
         table.setShowGrid(true);
-        table.setGridColor(lime);
+        table.setGridColor(text);
         table.setFillsViewportHeight(true);
         table.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
         table.setRowHeight(24);
-        table.setBackground(bg); // 빈 셀 배경도 검정
+        table.setBackground(bg);
         table.setOpaque(true);
 
-        table.setDefaultRenderer(Object.class, new TableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                JLabel label = new JLabel(value == null ? "" : value.toString());
-                label.setOpaque(true);
-                label.setBackground(isSelected ? Color.DARK_GRAY : bg);
-                label.setForeground(lime);
-                label.setFont(table.getFont());
-                label.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 6));
-                return label;
-            }
-        });
-
+        table.setDefaultRenderer(Object.class, getTableCellRenderer());
         table.getTableHeader().setBackground(Color.DARK_GRAY);
-        table.getTableHeader().setForeground(lime);
+        table.getTableHeader().setForeground(text);
         table.getTableHeader().setFont(new Font("맑은 고딕", Font.BOLD, 13));
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBorder(BorderFactory.createLineBorder(bg));
         scrollPane.getViewport().setBackground(bg);
         scrollPane.setBackground(bg);
-        scrollPane.setOpaque(true);
+        scrollPane.setBorder(BorderFactory.createLineBorder(bg));
 
         nameField = new JTextField(10);
         phoneField = new JTextField(10);
         searchField = new JTextField(10);
 
-        JButton addBtn = styledBtn("저장", lime);
-        JButton editBtn = styledBtn("수정", lime);
-        JButton delBtn = styledBtn("삭제", lime);
-        JButton searchBtn = styledBtn("검색", lime);
-        JButton clearBtn = styledBtn("전체삭제", lime);
-        JButton sortBtn = styledBtn("정렬", lime);
-        JButton exitBtn = styledBtn("종료", lime);
+        JButton addBtn = styledBtn("저장", text);
+        JButton editBtn = styledBtn("수정", text);
+        JButton delBtn = styledBtn("삭제", text);
+        JButton searchBtn = styledBtn("검색", text);
+        JButton clearBtn = styledBtn("전체삭제", text);
+        JButton sortBtn = styledBtn("정렬", text);
+        JButton themeBtn = styledBtn("테마전환", text);
+        JButton exitBtn = styledBtn("종료", text);
 
         JPanel inputPanel = new JPanel();
+        inputPanel.setOpaque(true);
         inputPanel.setBackground(bg);
         inputPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(bg),
                 "입력",
                 TitledBorder.LEFT, TitledBorder.TOP,
-                new Font("맑은 고딕", Font.BOLD, 12), lime
+                new Font("맑은 고딕", Font.BOLD, 12), text
         ));
-        JLabel nameLabel = new JLabel("이름:"); nameLabel.setForeground(lime);
-        JLabel phoneLabel = new JLabel("전화번호:"); phoneLabel.setForeground(lime);
+        JLabel nameLabel = new JLabel("이름:"); nameLabel.setForeground(text);
+        JLabel phoneLabel = new JLabel("전화번호:"); phoneLabel.setForeground(text);
         inputPanel.add(nameLabel); inputPanel.add(nameField);
         inputPanel.add(phoneLabel); inputPanel.add(phoneField);
         inputPanel.add(addBtn);
 
+        countLabel = new JLabel();
+        countLabel.setForeground(text);
+        updateCountLabel();
+
         JPanel bottomPanel = new JPanel();
+        bottomPanel.setOpaque(true);
         bottomPanel.setBackground(bg);
-        JLabel searchLabel = new JLabel("검색:"); searchLabel.setForeground(lime);
+        JLabel searchLabel = new JLabel("검색:"); searchLabel.setForeground(text);
         bottomPanel.add(searchLabel);
         bottomPanel.add(searchField);
         bottomPanel.add(searchBtn);
@@ -92,30 +92,58 @@ public class PhoneBookGUI extends JFrame {
         bottomPanel.add(sortBtn);
         bottomPanel.add(editBtn);
         bottomPanel.add(delBtn);
+        bottomPanel.add(themeBtn);
         bottomPanel.add(exitBtn);
+        bottomPanel.add(Box.createHorizontalStrut(20));
+        bottomPanel.add(countLabel);
 
-        addBtn.addActionListener(e -> save());
+        addBtn.addActionListener(e -> { save(); updateCountLabel(); });
         editBtn.addActionListener(e -> update());
-        delBtn.addActionListener(e -> delete());
-        clearBtn.addActionListener(e -> tableModel.setRowCount(0));
+        delBtn.addActionListener(e -> { delete(); updateCountLabel(); });
+        clearBtn.addActionListener(e -> { tableModel.setRowCount(0); updateCountLabel(); });
         searchBtn.addActionListener(e -> search());
         sortBtn.addActionListener(e -> sort());
+        themeBtn.addActionListener(e -> toggleTheme());
         exitBtn.addActionListener(e -> System.exit(0));
 
+        getContentPane().removeAll();
         getContentPane().setBackground(bg);
         add(inputPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
-        setVisible(true);
+        revalidate();
+        repaint();
     }
 
-    private JButton styledBtn(String text, Color lime) {
+    private Color getBgColor() {
+        return isDarkTheme ? Color.BLACK : Color.WHITE;
+    }
+
+    private Color getTextColor() {
+        return isDarkTheme ? new Color(0xCCFF00) : Color.DARK_GRAY;
+    }
+
+    private TableCellRenderer getTableCellRenderer() {
+        Color bg = getBgColor();
+        Color text = getTextColor();
+        return (table, value, isSelected, hasFocus, row, column) -> {
+            JLabel label = new JLabel(value == null ? "" : value.toString());
+            label.setOpaque(true);
+            label.setBackground(isSelected ? Color.DARK_GRAY : bg);
+            label.setForeground(text);
+            label.setFont(table.getFont());
+            label.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 6));
+            return label;
+        };
+    }
+
+    private JButton styledBtn(String text, Color fg) {
         JButton b = new JButton(text);
-        b.setBackground(Color.BLACK);
-        b.setForeground(lime);
-        b.setBorder(BorderFactory.createLineBorder(lime));
+        b.setBackground(getBgColor());
+        b.setForeground(fg);
+        b.setBorder(BorderFactory.createLineBorder(fg));
         b.setFocusPainted(false);
-        b.setContentAreaFilled(false);
+        b.setContentAreaFilled(true);
         b.setOpaque(true);
         return b;
     }
@@ -190,6 +218,15 @@ public class PhoneBookGUI extends JFrame {
         data.sort(Comparator.comparing(a -> a[0]));
         tableModel.setRowCount(0);
         for (String[] row : data) tableModel.addRow(row);
+    }
+
+    private void updateCountLabel() {
+        countLabel.setText("총 " + tableModel.getRowCount() + "개 등록됨");
+    }
+
+    private void toggleTheme() {
+        isDarkTheme = !isDarkTheme;
+        initUI();
     }
 
     private String formatPhone(String num) {
