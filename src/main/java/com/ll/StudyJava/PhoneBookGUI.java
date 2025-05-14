@@ -5,6 +5,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -18,7 +19,7 @@ public class PhoneBookGUI extends JFrame {
 
     public PhoneBookGUI() {
         setTitle("전화번호부");
-        setSize(600, 500);
+        setSize(650, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         initUI();
@@ -61,6 +62,8 @@ public class PhoneBookGUI extends JFrame {
         JButton sortBtn = styledBtn("정렬", text);
         JButton themeBtn = styledBtn("테마전환", text);
         JButton exitBtn = styledBtn("종료", text);
+        JButton exportBtn = styledBtn("내보내기", text);
+        JButton importBtn = styledBtn("불러오기", text);
 
         JPanel inputPanel = new JPanel();
         inputPanel.setOpaque(true);
@@ -90,6 +93,8 @@ public class PhoneBookGUI extends JFrame {
         bottomPanel.add(searchBtn);
         bottomPanel.add(clearBtn);
         bottomPanel.add(sortBtn);
+        bottomPanel.add(importBtn);
+        bottomPanel.add(exportBtn);
         bottomPanel.add(editBtn);
         bottomPanel.add(delBtn);
         bottomPanel.add(themeBtn);
@@ -104,6 +109,8 @@ public class PhoneBookGUI extends JFrame {
         searchBtn.addActionListener(e -> search());
         sortBtn.addActionListener(e -> sort());
         themeBtn.addActionListener(e -> toggleTheme());
+        exportBtn.addActionListener(e -> exportCSV());
+        importBtn.addActionListener(e -> importCSV());
         exitBtn.addActionListener(e -> System.exit(0));
 
         getContentPane().removeAll();
@@ -113,6 +120,37 @@ public class PhoneBookGUI extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
         revalidate();
         repaint();
+    }
+
+    private void exportCSV() {
+        try (PrintWriter pw = new PrintWriter(new FileWriter("contacts.csv"))) {
+            pw.println("이름,전화번호");
+            for (int i = 0; i < tableModel.getRowCount(); i++) {
+                pw.println(tableModel.getValueAt(i, 0) + "," + tableModel.getValueAt(i, 1));
+            }
+            JOptionPane.showMessageDialog(this, "CSV 파일로 저장되었습니다.");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "저장 중 오류 발생: " + e.getMessage());
+        }
+    }
+
+    private void importCSV() {
+        try (BufferedReader br = new BufferedReader(new FileReader("contacts.csv"))) {
+            String line;
+            tableModel.setRowCount(0);
+            boolean skipHeader = true;
+            while ((line = br.readLine()) != null) {
+                if (skipHeader) { skipHeader = false; continue; }
+                String[] parts = line.split(",");
+                if (parts.length == 2) {
+                    tableModel.addRow(new Object[]{parts[0], parts[1]});
+                }
+            }
+            updateCountLabel();
+            JOptionPane.showMessageDialog(this, "CSV 파일을 불러왔습니다.");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "불러오기 중 오류 발생: " + e.getMessage());
+        }
     }
 
     private Color getBgColor() {
