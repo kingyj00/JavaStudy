@@ -1,11 +1,12 @@
 package com.ll.StudyJava;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Collections;
 import java.util.List;
 
 public class PhoneBookGUI extends JFrame {
@@ -19,238 +20,183 @@ public class PhoneBookGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        Color bg = Color.BLACK;
+        Color lime = new Color(0xCCFF00);
+
         tableModel = new DefaultTableModel(new Object[]{"이름", "전화번호"}, 0);
         table = new JTable(tableModel);
+        table.setShowGrid(true);
+        table.setGridColor(lime);
+        table.setFillsViewportHeight(true);
+        table.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
+        table.setRowHeight(24);
+        table.setBackground(bg); // 빈 셀 배경도 검정
+        table.setOpaque(true);
+
+        table.setDefaultRenderer(Object.class, new TableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                JLabel label = new JLabel(value == null ? "" : value.toString());
+                label.setOpaque(true);
+                label.setBackground(isSelected ? Color.DARK_GRAY : bg);
+                label.setForeground(lime);
+                label.setFont(table.getFont());
+                label.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 6));
+                return label;
+            }
+        });
+
+        table.getTableHeader().setBackground(Color.DARK_GRAY);
+        table.getTableHeader().setForeground(lime);
+        table.getTableHeader().setFont(new Font("맑은 고딕", Font.BOLD, 13));
+
         JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBorder(BorderFactory.createLineBorder(bg));
+        scrollPane.getViewport().setBackground(bg);
+        scrollPane.setBackground(bg);
+        scrollPane.setOpaque(true);
 
         nameField = new JTextField(10);
         phoneField = new JTextField(10);
         searchField = new JTextField(10);
 
-        JButton addButton = new JButton("저장");
-        JButton updateButton = new JButton("수정");
-        JButton deleteButton = new JButton("삭제");
-        JButton searchButton = new JButton("검색");
-        JButton clearButton = new JButton("전체삭제");
-        JButton sortButton = new JButton("정렬");
-        JButton exitButton = new JButton("종료");
+        JButton addBtn = styledBtn("저장", lime);
+        JButton editBtn = styledBtn("수정", lime);
+        JButton delBtn = styledBtn("삭제", lime);
+        JButton searchBtn = styledBtn("검색", lime);
+        JButton clearBtn = styledBtn("전체삭제", lime);
+        JButton sortBtn = styledBtn("정렬", lime);
+        JButton exitBtn = styledBtn("종료", lime);
 
         JPanel inputPanel = new JPanel();
-        inputPanel.add(new JLabel("이름:"));
-        inputPanel.add(nameField);
-        inputPanel.add(new JLabel("전화번호:"));
-        inputPanel.add(phoneField);
-        inputPanel.add(addButton);
+        inputPanel.setBackground(bg);
+        inputPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(bg),
+                "입력",
+                TitledBorder.LEFT, TitledBorder.TOP,
+                new Font("맑은 고딕", Font.BOLD, 12), lime
+        ));
+        JLabel nameLabel = new JLabel("이름:"); nameLabel.setForeground(lime);
+        JLabel phoneLabel = new JLabel("전화번호:"); phoneLabel.setForeground(lime);
+        inputPanel.add(nameLabel); inputPanel.add(nameField);
+        inputPanel.add(phoneLabel); inputPanel.add(phoneField);
+        inputPanel.add(addBtn);
 
         JPanel bottomPanel = new JPanel();
-        bottomPanel.add(new JLabel("검색:"));
+        bottomPanel.setBackground(bg);
+        JLabel searchLabel = new JLabel("검색:"); searchLabel.setForeground(lime);
+        bottomPanel.add(searchLabel);
         bottomPanel.add(searchField);
-        bottomPanel.add(searchButton);
-        bottomPanel.add(clearButton);
-        bottomPanel.add(sortButton);
-        bottomPanel.add(updateButton);
-        bottomPanel.add(deleteButton);
-        bottomPanel.add(exitButton);
+        bottomPanel.add(searchBtn);
+        bottomPanel.add(clearBtn);
+        bottomPanel.add(sortBtn);
+        bottomPanel.add(editBtn);
+        bottomPanel.add(delBtn);
+        bottomPanel.add(exitBtn);
 
-        addButton.addActionListener(e -> saveEntry());
-        updateButton.addActionListener(e -> updateEntry());
-        deleteButton.addActionListener(e -> deleteEntry());
-        clearButton.addActionListener(e -> clearAll());
-        searchButton.addActionListener(e -> search());
-        sortButton.addActionListener(e -> showSortOptions());
-        exitButton.addActionListener(e -> System.exit(0));
+        addBtn.addActionListener(e -> save());
+        editBtn.addActionListener(e -> update());
+        delBtn.addActionListener(e -> delete());
+        clearBtn.addActionListener(e -> tableModel.setRowCount(0));
+        searchBtn.addActionListener(e -> search());
+        sortBtn.addActionListener(e -> sort());
+        exitBtn.addActionListener(e -> System.exit(0));
 
+        getContentPane().setBackground(bg);
         add(inputPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
-
         setVisible(true);
     }
 
-    private void saveEntry() {
+    private JButton styledBtn(String text, Color lime) {
+        JButton b = new JButton(text);
+        b.setBackground(Color.BLACK);
+        b.setForeground(lime);
+        b.setBorder(BorderFactory.createLineBorder(lime));
+        b.setFocusPainted(false);
+        b.setContentAreaFilled(false);
+        b.setOpaque(true);
+        return b;
+    }
+
+    private void save() {
         String name = nameField.getText().trim();
-        String rawPhone = phoneField.getText().trim();
-
-        if (name.isEmpty() && rawPhone.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "내용을 입력해주세요.");
+        String phone = phoneField.getText().trim();
+        if (name.isEmpty() || phone.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "이름과 전화번호를 입력하세요");
             return;
         }
-
-        if (name.isEmpty() || rawPhone.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "이름과 전화번호를 모두 입력하세요.");
+        if (!phone.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "전화번호는 숫자만 입력해주세요");
             return;
         }
-
-        if (!rawPhone.matches("\\d+")) {
-            JOptionPane.showMessageDialog(this, "전화번호에는 숫자만 입력할 수 있습니다.");
-            return;
-        }
-
-        String phone = formatPhone(rawPhone);
-
+        String formatted = formatPhone(phone);
         for (int i = 0; i < tableModel.getRowCount(); i++) {
-            String existingPhone = (String) tableModel.getValueAt(i, 1);
-            if (existingPhone.equals(phone)) {
-                JOptionPane.showMessageDialog(this, "이미 등록된 전화번호입니다.");
+            if (tableModel.getValueAt(i, 1).equals(formatted)) {
+                JOptionPane.showMessageDialog(this, "이미 등록된 번호입니다");
                 return;
             }
         }
-
-        tableModel.addRow(new Object[]{name, phone});
+        tableModel.addRow(new Object[]{name, formatted});
         nameField.setText("");
         phoneField.setText("");
     }
 
-    private void updateEntry() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "수정할 항목을 선택하세요.");
+    private void update() {
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "수정할 항목을 선택하세요");
             return;
         }
-
-        String currentName = (String) tableModel.getValueAt(selectedRow, 0);
-        String currentPhone = (String) tableModel.getValueAt(selectedRow, 1);
-
-        String newName = JOptionPane.showInputDialog(this, "새 이름을 입력하세요:", currentName);
-        if (newName == null || newName.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "이름을 입력해야 합니다.");
-            return;
-        }
-
-        String newPhone = JOptionPane.showInputDialog(this, "새 전화번호를 입력하세요 (숫자만):", currentPhone);
-        if (newPhone == null || newPhone.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "전화번호를 입력해야 합니다.");
-            return;
-        }
-        newPhone = newPhone.trim();
-
+        String newName = JOptionPane.showInputDialog(this, "새 이름", tableModel.getValueAt(row, 0));
+        String newPhone = JOptionPane.showInputDialog(this, "새 전화번호(숫자)", tableModel.getValueAt(row, 1));
+        if (newName == null || newPhone == null) return;
         if (!newPhone.matches("\\d+")) {
-            JOptionPane.showMessageDialog(this, "전화번호에는 숫자만 입력할 수 있습니다.");
+            JOptionPane.showMessageDialog(this, "전화번호는 숫자만 입력해주세요");
             return;
         }
-
-        String formattedPhone = formatPhone(newPhone);
-
-        for (int i = 0; i < tableModel.getRowCount(); i++) {
-            if (i == selectedRow) continue;
-            String existingPhone = (String) tableModel.getValueAt(i, 1);
-            if (existingPhone.equals(formattedPhone)) {
-                JOptionPane.showMessageDialog(this, "이미 등록된 전화번호입니다.");
-                return;
-            }
-        }
-
-        tableModel.setValueAt(newName.trim(), selectedRow, 0);
-        tableModel.setValueAt(formattedPhone, selectedRow, 1);
-        JOptionPane.showMessageDialog(this, "수정 완료!");
+        String formatted = formatPhone(newPhone);
+        tableModel.setValueAt(newName.trim(), row, 0);
+        tableModel.setValueAt(formatted, row, 1);
     }
 
-    private void deleteEntry() {
-        int selected = table.getSelectedRow();
-        if (selected != -1) {
-            tableModel.removeRow(selected);
-        } else {
-            JOptionPane.showMessageDialog(this, "삭제할 항목을 선택하세요.");
-        }
-    }
-
-    private void clearAll() {
-        int confirm = JOptionPane.showConfirmDialog(this, "정말 모두 삭제할까요?", "전체삭제", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            tableModel.setRowCount(0);
-        }
+    private void delete() {
+        int row = table.getSelectedRow();
+        if (row != -1) tableModel.removeRow(row);
+        else JOptionPane.showMessageDialog(this, "삭제할 항목을 선택하세요");
     }
 
     private void search() {
         String keyword = searchField.getText().trim();
-        if (keyword.isEmpty()) return;
-
-        boolean found = false;
         for (int i = 0; i < tableModel.getRowCount(); i++) {
-            String name = (String) tableModel.getValueAt(i, 0);
-            String phone = (String) tableModel.getValueAt(i, 1);
-            if (name.contains(keyword) || phone.contains(keyword)) {
+            if (tableModel.getValueAt(i, 0).toString().contains(keyword) ||
+                    tableModel.getValueAt(i, 1).toString().contains(keyword)) {
                 table.setRowSelectionInterval(i, i);
-                found = true;
-                break;
+                return;
             }
         }
-
-        if (!found) {
-            JOptionPane.showMessageDialog(this, "일치하는 항목이 없습니다.");
-        }
+        JOptionPane.showMessageDialog(this, "일치하는 항목이 없습니다");
     }
 
-    private void showSortOptions() {
-        String[] options = {"이름 오름차순", "이름 내림차순", "전화번호 오름차순", "전화번호 내림차순"};
-        String selected = (String) JOptionPane.showInputDialog(
-                this,
-                "정렬 기준을 선택하세요:",
-                "정렬",
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                options,
-                options[0]
-        );
-
-        if (selected == null) return;
-
-        switch (selected) {
-            case "이름 오름차순" -> sortByName(true);
-            case "이름 내림차순" -> sortByName(false);
-            case "전화번호 오름차순" -> sortByPhone(true);
-            case "전화번호 내림차순" -> sortByPhone(false);
-        }
-    }
-
-    private void sortByName(boolean ascending) {
+    private void sort() {
         List<String[]> data = new ArrayList<>();
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             data.add(new String[]{
-                    (String) tableModel.getValueAt(i, 0),
-                    (String) tableModel.getValueAt(i, 1)
+                    tableModel.getValueAt(i, 0).toString(),
+                    tableModel.getValueAt(i, 1).toString()
             });
         }
-
         data.sort(Comparator.comparing(a -> a[0]));
-        if (!ascending) Collections.reverse(data);
-
         tableModel.setRowCount(0);
-        for (String[] row : data) {
-            tableModel.addRow(row);
-        }
-
-        JOptionPane.showMessageDialog(this, ascending ? "이름 기준 오름차순 정렬되었습니다." : "이름 기준 내림차순 정렬되었습니다.");
+        for (String[] row : data) tableModel.addRow(row);
     }
 
-    private void sortByPhone(boolean ascending) {
-        List<String[]> data = new ArrayList<>();
-        for (int i = 0; i < tableModel.getRowCount(); i++) {
-            data.add(new String[]{
-                    (String) tableModel.getValueAt(i, 0),
-                    (String) tableModel.getValueAt(i, 1)
-            });
-        }
-
-        data.sort(Comparator.comparing(a -> a[1].replaceAll("\\D", "")));
-        if (!ascending) Collections.reverse(data);
-
-        tableModel.setRowCount(0);
-        for (String[] row : data) {
-            tableModel.addRow(row);
-        }
-
-        JOptionPane.showMessageDialog(this, ascending ? "전화번호 기준 오름차순 정렬되었습니다." : "전화번호 기준 내림차순 정렬되었습니다.");
-    }
-
-    private String formatPhone(String number) {
-        number = number.replaceAll("\\D", "");
-        if (number.length() == 11) {
-            return number.substring(0, 3) + "-" + number.substring(3, 7) + "-" + number.substring(7);
-        } else if (number.length() == 10) {
-            return number.substring(0, 3) + "-" + number.substring(3, 6) + "-" + number.substring(6);
-        }
-        return number;
+    private String formatPhone(String num) {
+        num = num.replaceAll("\\D", "");
+        if (num.length() == 11) return num.replaceFirst("(\\d{3})(\\d{4})(\\d+)", "$1-$2-$3");
+        if (num.length() == 10) return num.replaceFirst("(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3");
+        return num;
     }
 
     public static void main(String[] args) {
