@@ -15,6 +15,7 @@ public class PhoneBookGUI extends JFrame {
     private JTable table;
     private JTextField nameField, phoneField, searchField;
     private JLabel countLabel;
+    private JLabel signature;
     private boolean isDarkTheme = true;
 
     public PhoneBookGUI() {
@@ -65,7 +66,6 @@ public class PhoneBookGUI extends JFrame {
         JButton exportBtn = styledBtn("내보내기", text);
         JButton importBtn = styledBtn("불러오기", text);
 
-        // 입력창 + 버튼
         JPanel inputPanel = new JPanel();
         inputPanel.setOpaque(true);
         inputPanel.setBackground(bg);
@@ -81,8 +81,7 @@ public class PhoneBookGUI extends JFrame {
         inputPanel.add(phoneLabel); inputPanel.add(phoneField);
         inputPanel.add(addBtn);
 
-        // 상단 서명 + 입력창 묶기
-        JLabel signature = new JLabel("Made by Kingyj00.Git");
+        signature = new JLabel("Made by Kingyj00.Git");
         signature.setForeground(text);
         signature.setFont(new Font("Consolas", Font.BOLD, 12));
         JPanel topBanner = new JPanel(new BorderLayout());
@@ -172,7 +171,7 @@ public class PhoneBookGUI extends JFrame {
     }
 
     private Color getTextColor() {
-        return isDarkTheme ? new Color(0xCCFF00) : Color.DARK_GRAY;
+        return isDarkTheme ? new Color(0xCCFF00) : Color.BLACK;
     }
 
     private TableCellRenderer getTableCellRenderer() {
@@ -278,7 +277,7 @@ public class PhoneBookGUI extends JFrame {
 
     private void toggleTheme() {
         isDarkTheme = !isDarkTheme;
-        initUI();
+        initUI(); // 모든 색상 재적용 포함
     }
 
     private String formatPhone(String num) {
