@@ -19,7 +19,7 @@ public class PhoneBookGUI extends JFrame {
 
     public PhoneBookGUI() {
         setTitle("전화번호부");
-        setSize(650, 500);
+        setSize(650, 530);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         initUI();
@@ -65,6 +65,7 @@ public class PhoneBookGUI extends JFrame {
         JButton exportBtn = styledBtn("내보내기", text);
         JButton importBtn = styledBtn("불러오기", text);
 
+        // 입력창 + 버튼
         JPanel inputPanel = new JPanel();
         inputPanel.setOpaque(true);
         inputPanel.setBackground(bg);
@@ -79,6 +80,19 @@ public class PhoneBookGUI extends JFrame {
         inputPanel.add(nameLabel); inputPanel.add(nameField);
         inputPanel.add(phoneLabel); inputPanel.add(phoneField);
         inputPanel.add(addBtn);
+
+        // 상단 서명 + 입력창 묶기
+        JLabel signature = new JLabel("Made by Kingyj00.Git");
+        signature.setForeground(text);
+        signature.setFont(new Font("Consolas", Font.BOLD, 12));
+        JPanel topBanner = new JPanel(new BorderLayout());
+        topBanner.setBackground(bg);
+        topBanner.add(signature, BorderLayout.EAST);
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(bg);
+        topPanel.add(topBanner, BorderLayout.NORTH);
+        topPanel.add(inputPanel, BorderLayout.SOUTH);
 
         countLabel = new JLabel();
         countLabel.setForeground(text);
@@ -115,7 +129,7 @@ public class PhoneBookGUI extends JFrame {
 
         getContentPane().removeAll();
         getContentPane().setBackground(bg);
-        add(inputPanel, BorderLayout.NORTH);
+        add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
         revalidate();
