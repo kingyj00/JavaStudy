@@ -37,7 +37,7 @@ public class PhoneBookGUI extends JFrame {
         table.setShowGrid(true);
         table.setGridColor(text);
         table.setFillsViewportHeight(true);
-        table.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
+        table.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
         table.setRowHeight(24);
         table.setBackground(bg);
         table.setOpaque(true);
@@ -71,9 +71,9 @@ public class PhoneBookGUI extends JFrame {
         inputPanel.setBackground(bg);
         inputPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(bg),
-                "입력",
+                "",
                 TitledBorder.LEFT, TitledBorder.TOP,
-                new Font("맑은 고딕", Font.BOLD, 12), text
+                new Font("맑은 고딕", Font.BOLD, 20), text
         ));
         JLabel nameLabel = new JLabel("이름:"); nameLabel.setForeground(text);
         JLabel phoneLabel = new JLabel("전화번호:"); phoneLabel.setForeground(text);
