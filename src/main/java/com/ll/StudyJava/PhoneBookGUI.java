@@ -17,6 +17,7 @@ public class PhoneBookGUI extends JFrame {
     private JLabel countLabel;
     private JLabel signature;
     private boolean isDarkTheme = true;
+    private List<String[]> preservedData = new ArrayList<>();
 
     public PhoneBookGUI() {
         setTitle("전화번호부");
@@ -40,7 +41,6 @@ public class PhoneBookGUI extends JFrame {
         table.setRowHeight(24);
         table.setBackground(bg);
         table.setOpaque(true);
-
         table.setDefaultRenderer(Object.class, getTableCellRenderer());
         table.getTableHeader().setBackground(Color.DARK_GRAY);
         table.getTableHeader().setForeground(text);
@@ -133,6 +133,11 @@ public class PhoneBookGUI extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
         revalidate();
         repaint();
+
+        // 테마 변경 후 데이터 복원
+        for (String[] row : preservedData) {
+            tableModel.addRow(row);
+        }
     }
 
     private void exportCSV() {
@@ -276,8 +281,16 @@ public class PhoneBookGUI extends JFrame {
     }
 
     private void toggleTheme() {
+        // 데이터 백업
+        preservedData.clear();
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            preservedData.add(new String[]{
+                    tableModel.getValueAt(i, 0).toString(),
+                    tableModel.getValueAt(i, 1).toString()
+            });
+        }
         isDarkTheme = !isDarkTheme;
-        initUI(); // 모든 색상 재적용 포함
+        initUI();
     }
 
     private String formatPhone(String num) {
